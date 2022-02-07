@@ -17,7 +17,14 @@ fetch(
         d3.max(data, (d) => d.Year) + 1
       ])
       .range([padding, svgWidth - padding]);
-    const parseTime = d3.timeParse("%M:%S");
+    // const parseTime = d3.timeParse("%M:%S");
+    const parseTime = (rawTime) => {
+      let time = new Date();
+      let [mm, ss] = rawTime.split(":");
+      time.setMinutes(mm);
+      time.setSeconds(ss);
+      return time;
+    };
     const yScale = d3
       .scaleLinear()
       .domain([
@@ -38,7 +45,7 @@ fetch(
       .ticks(
         Math.floor(
           (d3.max(data, (d) => d.Year) + 1 - d3.min(data, (d) => d.Year) + 1) /
-            xTicksInterval
+          xTicksInterval
         )
       )
       .tickFormat((x) => x.toString());
@@ -88,7 +95,7 @@ fetch(
           .style("top", yScale(parseTime(d.Time)) + "px")
           .html(
             `${d.Name}, ${d.Nationality}<br><br>${d.Time}` +
-              (d.Doping.length === 0 ? `` : `<br>${d.Doping}`)
+            (d.Doping.length === 0 ? `` : `<br>${d.Doping}`)
           )
           .attr("data-year", d.Year);
       })
